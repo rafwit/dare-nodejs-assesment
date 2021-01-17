@@ -1,23 +1,24 @@
 const router = require('express').Router();
-const { retrieveAllClients } = require('./controllers/clients.controller');
+const {
+  getAllClients,
+  getClientsById,
+  getClientPoliecies,
+} = require('./controllers/clients.controllers');
 const { loginUser } = require('./controllers/login.controller');
+const {
+  getAllPolicies,
+  getPolicyClientDetails,
+} = require('./controllers/policies.controller');
 
 router.post('/login', loginUser);
 
-router.get('/policies', (req, res) => {
-  res.send("you hit the endpoint 'policies'");
-});
-router.get('/policies/:id', (req, res) => {
-  res.send("you hit the endpoint 'policies/:id'");
-});
+router.get('/policies', getAllPolicies);
+router.get('/policies/:id', getPolicyClientDetails);
 
-router.get('/clients', retrieveAllClients);
-router.get('/clients/:id', (req, res) => {
-  res.send("you hit the endpoint 'clients/:id'");
-});
-router.get('/clients/:id/policies', (req, res) => {
-  res.send("you hit the endpoint 'clients:id/policies'");
-});
+router.get('/clients', getAllClients);
+router.get('/clients/:id', getClientsById);
+router.get('/clients/:id/policies', getClientPoliecies);
+
 router.get('*', (req, res) => {
   res.status(404).send('Sorry, not found 😞');
 });
