@@ -1,24 +1,62 @@
 const axios = require('axios');
+require('dotenv').config();
+
 const { authenticateUser } = require('../middleware/authentication');
 
-async function retrieveAllClients() {
-  const auth = await authenticateUser();
-  const clients = await axios.get(
-    'https://dare-nodejs-assessment.herokuapp.com/api/clients',
-    {
+const { CLIENTS_ENDPOINT, POLICIES_ENDPOINT } = process.env;
+
+async function retrieveAllClients(req, res) {
+  // todo add token to header and verify it
+
+  const { limit = 10, name = undefined } = req.query;
+
+  try {
+    const auth = await authenticateUser();
+    const clients = await axios.get(CLIENTS_ENDPOINT, {
       headers: {
         Authorization: `${auth.data.type} ${auth.data.token}`,
       },
-    },
-  );
-  return clients;
+    });
+
+    const policies = await axios.get(POLICIES_ENDPOINT, {
+      headers: {
+        Authorization: `${auth.data.type} ${auth.data.token}`,
+      },
+    });
+    const resultNotFilteredByName = clients.data.map((client) => {
+      // eslint-disable-next-line no-param-reassign
+      client.policies = [];
+      policies.data.map((policy) => {
+        if (client.id === policy.clientId) {
+          client.policies.push({
+            id: policy.id,
+            amountInsured: policy.amountInsured,
+            inceptionDate: policy.inceptionDate,
+          });
+        }
+        return client.policies;
+      });
+      return client;
+    });
+
+    // filtering by name if provided
+
+    if (name) {
+      const resultFilteredByName = resultNotFilteredByName.filter(
+        (client) => client.name === name,
+      );
+      res.status(200).send(resultFilteredByName.slice(0, limit));
+    } else {
+      res.status(200).send(resultNotFilteredByName.slice(0, limit));
+    }
+  } catch (error) {
+    res.status(401).send({
+      code: 401,
+      message: error,
+    });
+  }
 }
 
-async function getAllClients(req, res) {
-  // todo add pagination and limit to 10 by default, and optional filter by name
-  const result = await retrieveAllClients();
-  // console.log(result.data);
-  res.status(200).send(result.data);
-}
+// async function getClientsById(req, res) {}
 
-module.exports = { getAllClients };
+module.exports = { retrieveAllClients };

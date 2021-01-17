@@ -1,7 +1,7 @@
 const router = require('express').Router();
-const { getAllClients } = require('./controllers/clients.controller');
+const { retrieveAllClients } = require('./controllers/clients.controller');
 
-router.post('/login', getAllClients);
+router.post('/login', retrieveAllClients);
 
 router.get('/policies', (req, res) => {
   res.send("you hit the endpoint 'policies'");
