@@ -1,26 +1,24 @@
 const axios = require('axios');
 require('dotenv').config();
 
-const { authenticateUser } = require('../middleware/authentication');
+// const { authenticateUser } = require('../middleware/authentication');
 
 const { CLIENTS_ENDPOINT, POLICIES_ENDPOINT } = process.env;
 
 async function retrieveAllClients(req, res) {
-  // todo add token to header and verify it
-
   const { limit = 10, name = undefined } = req.query;
+  const [type, token] = req.headers.authorization.split(' ');
 
   try {
-    const auth = await authenticateUser();
     const clients = await axios.get(CLIENTS_ENDPOINT, {
       headers: {
-        Authorization: `${auth.data.type} ${auth.data.token}`,
+        Authorization: `${type} ${token}`,
       },
     });
 
     const policies = await axios.get(POLICIES_ENDPOINT, {
       headers: {
-        Authorization: `${auth.data.type} ${auth.data.token}`,
+        Authorization: `${type} ${token}`,
       },
     });
     const resultNotFilteredByName = clients.data.map((client) => {
@@ -43,7 +41,7 @@ async function retrieveAllClients(req, res) {
 
     if (name) {
       const resultFilteredByName = resultNotFilteredByName.filter(
-        (client) => client.name === name,
+        (client) => client.name === name
       );
       res.status(200).send(resultFilteredByName.slice(0, limit));
     } else {
