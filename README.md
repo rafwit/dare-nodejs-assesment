@@ -50,7 +50,7 @@ npm start
 
 ### If I would have more time I would:
 
-1. I would develop cache 🧳 after consuming `INSURANCE API` clients and policie. I encounter issues with using etag and I would need more time to develop proper solution
+1. I would develop cache 🧳 after consuming `INSURANCE API` clients and policies. I encountered issues with using etag and I would need more time to develop proper solution
 2. I would add more tests 🧪
 
 #### Thank you and I will appreciate any feedback 🧠 ➡︎ 📈
