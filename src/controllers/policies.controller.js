@@ -1,23 +1,41 @@
+/* eslint-disable no-param-reassign */
 const {
   handleError,
-  fetchAllPolicies,
-  fetchAllClients,
   addPoliciesToClient,
+  provideInsuranceToken,
+  authorizeUser,
 } = require('../helpers/functions');
+const { fetchAllClients, fetchAllPolicies } = require('../helpers/apiService');
 
 async function getAllPolicies(req, res) {
   const { limit = 10 } = req.query;
-  const [type, token] = req.headers.authorization.split(' ');
+  const token = req.headers.authorization.split(' ')[1];
+  // eslint-disable-next-line no-unused-vars
+  const [_, userRole, userId] = authorizeUser(token);
 
   try {
-    const policies = await fetchAllPolicies(type, token);
-    const result = policies.data.map((policy) => {
-      // eslint-disable-next-line no-param-reassign
-      delete policy.clientId;
-      return policy;
-    });
+    const insuranceToken = await provideInsuranceToken();
+    const policies = await fetchAllPolicies(
+      insuranceToken.type,
+      insuranceToken.token
+    );
 
-    res.status(200).send(result.slice(0, limit));
+    if (userRole === 'admin') {
+      const result = policies.data.map((policy) => {
+        delete policy.clientId;
+        return policy;
+      });
+
+      res.status(200).send(result.slice(0, limit));
+    } else {
+      const result = policies.data
+        .filter((policy) => policy.clientId === userId)
+        .map((policy) => {
+          delete policy.clientId;
+          return policy;
+        });
+      res.status(200).send(result.slice(0, limit));
+    }
   } catch (error) {
     handleError(res, error);
   }
@@ -25,21 +43,43 @@ async function getAllPolicies(req, res) {
 
 async function getPolicyClientDetails(req, res) {
   const { id } = req.params;
-  const [type, token] = req.headers.authorization.split(' ');
+  const token = req.headers.authorization.split(' ')[1];
+  // eslint-disable-next-line no-unused-vars
+  const [_, userRole, userId] = authorizeUser(token);
 
-  try {
-    const clients = await fetchAllClients(type, token);
-    const policies = await fetchAllPolicies(type, token);
-    const searchedPolicy = policies.data.filter((policy) => policy.id === id);
-    // console.log(clients.data);
-    const clientDetailsWithoutPolicies = clients.data.filter(
-      (client) => client.id === searchedPolicy[0].clientId
-    );
+  if (userRole !== 'admin' && userId !== id) {
+    res.status(403).send({
+      code: 403,
+      message: "You don't have permission to access this resource",
+    });
+  } else {
+    try {
+      const insuranceToken = await provideInsuranceToken();
+      const clients = await fetchAllClients(
+        insuranceToken.type,
+        insuranceToken.token
+      );
+      const policies = await fetchAllPolicies(
+        insuranceToken.type,
+        insuranceToken.token
+      );
+      const searchedPolicy = policies.data.filter((policy) => policy.id === id);
+      if (searchedPolicy.length === 0) {
+        res.status(404).send({ code: 404, message: 'Resource not found' });
+      } else {
+        const clientDetailsWithoutPolicies = clients.data.filter(
+          (client) => client.id === searchedPolicy[0].clientId
+        );
 
-    const result = addPoliciesToClient(clientDetailsWithoutPolicies, policies);
-    res.status(200).send(result);
-  } catch (error) {
-    handleError(res, error);
+        const result = addPoliciesToClient(
+          clientDetailsWithoutPolicies,
+          policies
+        );
+        res.status(200).send(result);
+      }
+    } catch (error) {
+      handleError(res, error);
+    }
   }
 }
 
