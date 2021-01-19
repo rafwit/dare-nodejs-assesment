@@ -4,13 +4,13 @@ const {
   getClientsById,
   getClientPoliecies,
 } = require('./controllers/clients.controllers');
-const { loginUser } = require('./controllers/login.controller');
+const { authenticateUser } = require('./controllers/login.controller');
 const {
   getAllPolicies,
   getPolicyClientDetails,
 } = require('./controllers/policies.controller');
 
-router.post('/login', loginUser);
+router.post('/login', authenticateUser);
 
 router.get('/policies', getAllPolicies);
 router.get('/policies/:id', getPolicyClientDetails);
