@@ -26,6 +26,18 @@ To start application navigate to repo's root folder and run
 npm start
 ```
 
+Next, create `.env` file in the root folder containing following information
+
+```
+SERVER_PORT=3000
+CLIENT_ID=<CLIENT ID THAT YOU PROVIDED TO ME>
+CLIENT_SECRET=<CLIENT SECRET THAT YOU PROVIDED TO ME>
+AUTHENTICATION_ENDPOINT=<INSURANCE API LOGIN ENDPOING>
+CLIENTS_ENDPOINT=<INSURANCE API CLIENTS ENDPOING>
+POLICIES_ENDPOINT=<INSURANCE API POLICIES ENDPOING>
+SECRET_KEY=VerySecureSecretKey
+```
+
 ## Summary of work
 
 - I have created REST API replicating all endpoints and their behaviour as explained in this [swagger.](https://dare-nodejs-assessment.herokuapp.com/assessment-swagger/)
