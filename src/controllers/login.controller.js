@@ -30,11 +30,16 @@ async function authenticateUser(req, res) {
     if (!user) {
       res.status(400).send({ code: 400, message: 'User not found' });
     } else {
-      const userToken = jwt.sign({ username }, SECRET_KEY);
+      const userToken = jwt.sign({ username }, SECRET_KEY, {
+        expiresIn: '0.5h',
+      });
+
       myCache.set(username, `${user.role} ${user.id}`);
-      res
-        .status(200)
-        .send({ token: userToken, type: 'Bearer', expires_in: 560 });
+      res.status(200).send({
+        token: userToken,
+        type: 'Bearer',
+        expires_in: jwt.decode(userToken).exp - jwt.decode(userToken).iat,
+      });
     }
   } catch (error) {
     handleError(res, error);
