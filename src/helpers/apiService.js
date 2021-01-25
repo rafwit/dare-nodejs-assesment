@@ -1,6 +1,5 @@
 const axios = require('axios');
 const { myCache } = require('./cache');
-require('dotenv').config();
 
 const {
   CLIENTS_ENDPOINT,
@@ -15,6 +14,7 @@ async function renewInsuranceToken() {
     client_id: CLIENT_ID,
     client_secret: CLIENT_SECRET,
   });
+
   myCache.set('insurance_token', token.data, 560);
 }
 
