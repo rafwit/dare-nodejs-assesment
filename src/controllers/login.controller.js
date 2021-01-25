@@ -30,11 +30,14 @@ async function authenticateUser(req, res) {
     if (!user) {
       res.status(400).send({ code: 400, message: 'User not found' });
     } else {
-      const userToken = jwt.sign({ username }, SECRET_KEY);
+      const userToken = jwt.sign({ username }, SECRET_KEY, {
+        expiresIn: '0.5h',
+      });
+
       myCache.set(username, `${user.role} ${user.id}`);
       res
         .status(200)
-        .send({ token: userToken, type: 'Bearer', expires_in: 560 });
+        .send({ token: userToken, type: 'Bearer', expires_in: 1800 });
     }
   } catch (error) {
     handleError(res, error);
