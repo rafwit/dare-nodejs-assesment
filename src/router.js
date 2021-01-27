@@ -9,8 +9,11 @@ const {
   getAllPolicies,
   getPolicyClientDetails,
 } = require('./controllers/policies.controller');
+const { authorizeUser } = require('./middleware/authorization');
 
 router.post('/login', authenticateUser);
+
+router.get('*', authorizeUser);
 
 router.get('/policies', getAllPolicies);
 router.get('/policies/:id', getPolicyClientDetails);

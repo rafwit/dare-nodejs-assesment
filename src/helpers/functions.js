@@ -1,9 +1,6 @@
 /* eslint-disable no-param-reassign */
-const jwt = require('jsonwebtoken');
 const { renewInsuranceToken } = require('./apiService');
 const { myCache } = require('./cache');
-
-const SECRET_KEY = process.env.SECRET_KEY || 'lalala this isnt secure';
 
 async function provideInsuranceToken() {
   let insuranceToken = myCache.get('insurance_token');
@@ -19,19 +16,6 @@ function checkIfClientExistAndVerifyRole(clients, username) {
   const user = clients.filter((client) => client.email === username);
   if (user) return user[0];
   return false;
-}
-
-function authorizeUser(token) {
-  try {
-    const decoded = jwt.verify(token, SECRET_KEY);
-    const user = myCache.get(decoded.username).split(' ');
-
-    return [decoded.username, ...user];
-  } catch (error) {
-    throw new Error('Invalid token!');
-  }
-
-  // return [decoded.username]
 }
 
 function addPoliciesToClients(clients, policies) {
@@ -88,6 +72,5 @@ module.exports = {
   addPoliciesToClient,
   handleError,
   checkIfClientExistAndVerifyRole,
-  authorizeUser,
   provideInsuranceToken,
 };

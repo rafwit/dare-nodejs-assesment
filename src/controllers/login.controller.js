@@ -34,7 +34,7 @@ async function authenticateUser(req, res) {
         expiresIn: '0.5h',
       });
 
-      myCache.set(username, `${user.role} ${user.id}`);
+      myCache.set(username, `${username} ${user.role} ${user.id}`);
       res.status(200).send({
         token: userToken,
         type: 'Bearer',

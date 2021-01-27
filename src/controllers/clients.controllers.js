@@ -4,15 +4,14 @@ const {
   addPoliciesToClients,
   addPoliciesToClient,
   handleError,
-  authorizeUser,
   provideInsuranceToken,
 } = require('../helpers/functions');
 
 async function getAllClients(req, res) {
   const { limit = 10 } = req.query;
   let { name = undefined } = req.query;
-  const token = req.headers.authorization.split(' ')[1];
-  const [username, userRole] = authorizeUser(token);
+
+  const [username, userRole] = req.user;
 
   try {
     const insuranceToken = await provideInsuranceToken();
@@ -43,8 +42,7 @@ async function getAllClients(req, res) {
 
 async function getClientsById(req, res) {
   const { id } = req.params;
-  const token = req.headers.authorization.split(' ')[1];
-  const [username, userRole] = authorizeUser(token);
+  const [username, userRole] = req.user;
 
   try {
     const insuranceToken = await provideInsuranceToken();
@@ -78,9 +76,8 @@ async function getClientsById(req, res) {
 
 async function getClientPoliecies(req, res) {
   const { id } = req.params;
-  const token = req.headers.authorization.split(' ')[1];
   // eslint-disable-next-line no-unused-vars
-  const [_, userRole, userId] = authorizeUser(token);
+  const [_, userRole, userId] = req.user;
 
   if (userRole !== 'admin' && userId !== id) {
     res.status(403).send({
