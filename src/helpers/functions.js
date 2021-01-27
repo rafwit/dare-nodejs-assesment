@@ -54,23 +54,9 @@ function addPoliciesToClient(clients, policies) {
   });
 }
 
-function handleError(response, error) {
-  if (error.response) {
-    response.status(error.response.data.statusCode).send({
-      code: error.response.data.statusCode,
-      message: error.response.data.message,
-    });
-  } else {
-    // eslint-disable-next-line no-console
-    console.log(error);
-    response.status(404).send('Something went wrong');
-  }
-}
-
 module.exports = {
   addPoliciesToClients,
   addPoliciesToClient,
-  handleError,
   checkIfClientExistAndVerifyRole,
   provideInsuranceToken,
 };

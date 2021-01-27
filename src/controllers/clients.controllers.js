@@ -3,11 +3,10 @@ const { fetchAllClients, fetchAllPolicies } = require('../helpers/apiService');
 const {
   addPoliciesToClients,
   addPoliciesToClient,
-  handleError,
   provideInsuranceToken,
 } = require('../helpers/functions');
 
-async function getAllClients(req, res) {
+async function getAllClients(req, res, next) {
   const { limit = 10 } = req.query;
   let { name = undefined } = req.query;
 
@@ -36,11 +35,11 @@ async function getAllClients(req, res) {
       res.status(200).send(resultNotFilteredByName.slice(0, limit));
     }
   } catch (error) {
-    handleError(res, error);
+    next(error);
   }
 }
 
-async function getClientsById(req, res) {
+async function getClientsById(req, res, next) {
   const { id } = req.params;
   const [username, userRole] = req.user;
 
@@ -70,11 +69,11 @@ async function getClientsById(req, res) {
       res.status(200).send(result);
     }
   } catch (error) {
-    handleError(res, error);
+    next(error);
   }
 }
 
-async function getClientPoliecies(req, res) {
+async function getClientPoliecies(req, res, next) {
   const { id } = req.params;
   // eslint-disable-next-line no-unused-vars
   const [_, userRole, userId] = req.user;
@@ -100,7 +99,7 @@ async function getClientPoliecies(req, res) {
         });
       res.status(200).send(filteredPolicies);
     } catch (error) {
-      handleError(res, error);
+      next(error);
     }
   }
 }

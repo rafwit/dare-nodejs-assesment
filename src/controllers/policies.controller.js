@@ -1,12 +1,11 @@
 /* eslint-disable no-param-reassign */
 const {
-  handleError,
   addPoliciesToClient,
   provideInsuranceToken,
 } = require('../helpers/functions');
 const { fetchAllClients, fetchAllPolicies } = require('../helpers/apiService');
 
-async function getAllPolicies(req, res) {
+async function getAllPolicies(req, res, next) {
   const { limit = 10 } = req.query;
   // eslint-disable-next-line no-unused-vars
   const [_, userRole, userId] = req.user;
@@ -35,11 +34,11 @@ async function getAllPolicies(req, res) {
       res.status(200).send(result.slice(0, limit));
     }
   } catch (error) {
-    handleError(res, error);
+    next(error);
   }
 }
 
-async function getPolicyClientDetails(req, res) {
+async function getPolicyClientDetails(req, res, next) {
   const { id } = req.params;
   // eslint-disable-next-line no-unused-vars
   const [_, userRole, userId] = req.user;
@@ -75,7 +74,7 @@ async function getPolicyClientDetails(req, res) {
         res.status(200).send(result);
       }
     } catch (error) {
-      handleError(res, error);
+      next(error);
     }
   }
 }

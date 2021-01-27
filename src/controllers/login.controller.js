@@ -6,14 +6,11 @@ const {
   fetchAllClients,
 } = require('../helpers/apiService');
 
-const {
-  handleError,
-  checkIfClientExistAndVerifyRole,
-} = require('../helpers/functions');
+const { checkIfClientExistAndVerifyRole } = require('../helpers/functions');
 
 const { myCache } = require('../helpers/cache');
 
-async function authenticateUser(req, res) {
+async function authenticateUser(req, res, next) {
   const { username } = req.body;
   let insuranceToken = myCache.get('insurance_token');
   if (insuranceToken === undefined) {
@@ -42,7 +39,7 @@ async function authenticateUser(req, res) {
       });
     }
   } catch (error) {
-    handleError(res, error);
+    next(error);
   }
 }
 
