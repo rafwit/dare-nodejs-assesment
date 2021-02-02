@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken');
+const createError = require('http-errors');
 const { myCache } = require('../helpers/cache');
 
 const SECRET_KEY = process.env.SECRET_KEY || 'lalala this isnt secure';
 
-function authorizeUser(req, _, next) {
+function authorizeUser(req, res, next) {
   const token = req.headers.authorization.split(' ')[1];
 
   try {
@@ -11,7 +12,12 @@ function authorizeUser(req, _, next) {
     req.user = myCache.get(decoded.username).split(' ');
     next();
   } catch (error) {
-    throw new Error('Invalid token! Please login.');
+    next(
+      createError(401, {
+        code: 401,
+        message: `Invalid token, please login.`,
+      })
+    );
   }
 }
 
