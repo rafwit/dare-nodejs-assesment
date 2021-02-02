@@ -6,7 +6,6 @@ const SECRET_KEY = process.env.SECRET_KEY || 'lalala this isnt secure';
 
 function authorizeUser(req, res, next) {
   const token = req.headers.authorization.split(' ')[1];
-
   try {
     const decoded = jwt.verify(token, SECRET_KEY);
     req.user = myCache.get(decoded.username).split(' ');
