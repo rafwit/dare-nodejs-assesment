@@ -25,8 +25,4 @@ router.get('/clients/:id/policies', getClientPoliecies);
 
 router.get('*', handleError);
 
-router.get('*', (req, res) => {
-  res.status(404).send('Sorry, not found 😞');
-});
-
 module.exports = router;
