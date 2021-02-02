@@ -1,4 +1,5 @@
 /* eslint-disable no-param-reassign */
+const jwt = require('jsonwebtoken');
 const { renewInsuranceToken } = require('./apiService');
 const { myCache } = require('./cache');
 
@@ -10,6 +11,13 @@ async function provideInsuranceToken() {
     insuranceToken = myCache.get('insurance_token');
   }
   return insuranceToken;
+}
+
+function setTokenValidTime(token) {
+  const iat = Date.now();
+  const { exp } = jwt.decode(token);
+
+  return Math.floor((exp * 1000 - iat) / 1000);
 }
 
 function checkIfClientExistAndVerifyRole(clients, username) {
@@ -59,4 +67,5 @@ module.exports = {
   addPoliciesToClient,
   checkIfClientExistAndVerifyRole,
   provideInsuranceToken,
+  setTokenValidTime,
 };
