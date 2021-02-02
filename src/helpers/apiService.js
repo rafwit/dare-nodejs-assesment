@@ -1,6 +1,6 @@
 const axios = require('axios');
-const jwt = require('jsonwebtoken');
 const { myCache } = require('./cache');
+const { setTokenValidTime } = require('./functions');
 
 const {
   CLIENTS_ENDPOINT,
@@ -15,12 +15,10 @@ async function renewInsuranceToken() {
     client_id: CLIENT_ID,
     client_secret: CLIENT_SECRET,
   });
-  const decoded = jwt.decode(token.data.token, { complete: true });
-  myCache.set(
-    'insurance_token',
-    token.data,
-    `${decoded.payload.exp - decoded.payload.iat}`
-  );
+
+  const validTill = setTokenValidTime(token.data.token);
+
+  myCache.set('insurance_token', token.data, validTill);
 }
 
 async function fetchAllClients(type, token) {
