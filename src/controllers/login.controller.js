@@ -6,7 +6,10 @@ const {
   fetchAllClients,
 } = require('../helpers/apiService');
 
-const { checkIfClientExistAndVerifyRole } = require('../helpers/functions');
+const {
+  checkIfClientExistAndVerifyRole,
+  setTokenValidTime,
+} = require('../helpers/functions');
 
 const { myCache } = require('../helpers/cache');
 
@@ -31,11 +34,13 @@ async function authenticateUser(req, res, next) {
         expiresIn: '0.5h',
       });
 
+      const validTill = setTokenValidTime(userToken);
+
       myCache.set(username, `${username} ${user.role} ${user.id}`);
       res.status(200).send({
         token: userToken,
         type: 'Bearer',
-        expires_in: jwt.decode(userToken).exp - jwt.decode(userToken).iat,
+        expires_in: validTill,
       });
     }
   } catch (error) {
