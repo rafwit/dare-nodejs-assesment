@@ -13,11 +13,11 @@ async function provideInsuranceToken() {
   return insuranceToken;
 }
 
-function setTokenValidTime(token) {
-  const iat = Date.now();
+function getTokenValidTime(token) {
+  const timeNow = Date.now();
   const { exp } = jwt.decode(token);
 
-  return Math.floor((exp * 1000 - iat) / 1000);
+  return Math.floor((exp * 1000 - timeNow) / 1000);
 }
 
 function checkIfClientExistAndVerifyRole(clients, username) {
@@ -67,5 +67,5 @@ module.exports = {
   addPoliciesToClient,
   checkIfClientExistAndVerifyRole,
   provideInsuranceToken,
-  setTokenValidTime,
+  getTokenValidTime,
 };
