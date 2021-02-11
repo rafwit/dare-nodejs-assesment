@@ -11,12 +11,14 @@ app.use(cors());
 app.use(express.json());
 app.use(router);
 
-app.listen(SERVER_PORT, (err) => {
-  if (err) {
-    console.log(`😞 Sorry, something went wrong! ${err}`);
-  } else {
-    console.log(`🚀 Server is listening on port ${SERVER_PORT}!`);
-  }
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(SERVER_PORT, (err) => {
+    if (err) {
+      console.log(`😞 Sorry, something went wrong! ${err}`);
+    } else {
+      console.log(`🚀 Server is listening on port ${SERVER_PORT}!`);
+    }
+  });
+}
 
 module.exports = app;

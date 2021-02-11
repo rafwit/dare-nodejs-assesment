@@ -4,7 +4,7 @@
   "description": "Node.js assement for recruitment process with Altran",
   "main": "index.js",
   "scripts": {
-    "test": "jest -i --forceExit",
+    "test": "NODE_ENV=test jest -i --forceExit",
     "start": "node src/index.js"
   },
   "keywords": [],
