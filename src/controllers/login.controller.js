@@ -1,26 +1,22 @@
 const jwt = require('jsonwebtoken');
 
 const SECRET_KEY = process.env.SECRET_KEY || 'lalala this isnt secure';
-const {
-  renewInsuranceToken,
-  fetchAllClients,
-} = require('../helpers/apiService');
+const { fetchAllClients } = require('../helpers/apiService');
 
 const {
   checkIfClientExistAndVerifyRole,
-  getTokenValidTime,
+  provideInsuranceToken,
 } = require('../helpers/functions');
 
 const { myCache } = require('../helpers/cache');
+const { getTokenValidTime } = require('../helpers/get-token-valid-time');
 
 async function authenticateUser(req, res, next) {
   const { username } = req.body;
-  let insuranceToken = myCache.get('insurance_token');
-  if (insuranceToken === undefined) {
-    await renewInsuranceToken();
-    insuranceToken = myCache.get('insurance_token');
-  }
+
   try {
+    const insuranceToken = await provideInsuranceToken();
+
     const clients = await fetchAllClients(
       insuranceToken.type,
       insuranceToken.token

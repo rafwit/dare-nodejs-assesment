@@ -1,6 +1,6 @@
 const axios = require('axios');
 const { myCache } = require('./cache');
-const { getTokenValidTime } = require('./functions');
+const { getTokenValidTime } = require('./get-token-valid-time');
 
 const {
   CLIENTS_ENDPOINT,
@@ -11,14 +11,19 @@ const {
 } = process.env;
 
 async function renewInsuranceToken() {
-  const token = await axios.post(AUTHENTICATION_ENDPOINT, {
-    client_id: CLIENT_ID,
-    client_secret: CLIENT_SECRET,
-  });
+  try {
+    const token = await axios.post(AUTHENTICATION_ENDPOINT, {
+      client_id: CLIENT_ID,
+      client_secret: CLIENT_SECRET,
+    });
 
-  const validTill = getTokenValidTime(token.data.token);
+    const validTill = getTokenValidTime(token.data.token);
 
-  myCache.set('insurance_token', token.data, validTill);
+    myCache.set('insurance_token', token.data, validTill);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.log(error);
+  }
 }
 
 async function fetchAllClients(type, token) {
