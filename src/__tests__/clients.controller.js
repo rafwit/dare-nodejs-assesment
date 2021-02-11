@@ -24,6 +24,7 @@ describe('GET /clients', () => {
       .get('/clients')
       .set('Authorization', `Bearer ${adminToken}`)
       .expect(200);
+
     expect(response.body).toBeTruthy();
     expect(response.body.length).toBeGreaterThan(1);
   });
@@ -34,6 +35,7 @@ describe('GET /clients', () => {
       .get('/clients')
       .set('Authorization', `Bearer ${userToken}`)
       .expect(200);
+
     expect(response.body).toBeTruthy();
     expect(response.body.length).toBe(1);
   });
@@ -42,7 +44,9 @@ describe('GET /clients', () => {
     expect.assertions(1);
     const response = await request(app)
       .get('/clients')
-      .set('Authorization', `Bearer ${userToken}`);
+      .set('Authorization', `Bearer ${userToken}`)
+      .expect(200);
+
     expect(Object.keys(response.body[0])).toHaveLength(5);
   });
 
@@ -50,7 +54,9 @@ describe('GET /clients', () => {
     expect.assertions(5);
     const response = await request(app)
       .get('/clients')
-      .set('Authorization', `Bearer ${userToken}`);
+      .set('Authorization', `Bearer ${userToken}`)
+      .expect(200);
+
     expect(
       Boolean(response.body[0].id && typeof response.body[0].id === 'string')
     ).toBe(true);
@@ -77,7 +83,9 @@ describe('GET /clients', () => {
     const response = await request(app)
       .get('/clients')
       .query({ name: 'barnettblankenship@quotezart.com' })
-      .set('Authorization', `Bearer ${adminToken}`);
+      .set('Authorization', `Bearer ${adminToken}`)
+      .expect(200);
+
     expect(response.body).toBeTruthy();
     expect(response.body).toHaveLength(1);
     expect(response.body[0].email).toEqual('barnettblankenship@quotezart.com');
@@ -91,6 +99,7 @@ describe('GET /clients/:id', () => {
       .get('/clients/a3b8d425-2b60-4ad7-becc-bedf2ef860bd')
       .set('Authorization', `Bearer ${adminToken}`)
       .expect(200);
+
     expect(response.body).toHaveLength(1);
     expect(response.body[0].id).toEqual('a3b8d425-2b60-4ad7-becc-bedf2ef860bd');
   });
@@ -101,6 +110,7 @@ describe('GET /clients/:id', () => {
       .get('/clients/a0ece5db-cd14-4f21-812f-966633e7be86')
       .set('Authorization', `Bearer ${userToken}`)
       .expect(403);
+
     expect(response.error).toBeTruthy();
     expect(response.statusCode).toBe(403);
   });
