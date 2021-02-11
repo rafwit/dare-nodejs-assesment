@@ -104,10 +104,34 @@ describe('GET /clients/:id', () => {
     expect(response.body[0].id).toEqual('a3b8d425-2b60-4ad7-becc-bedf2ef860bd');
   });
 
-  test('Shoudl return 403 Unauthorized error if the user role "user" requests client/:id !== user.id', async () => {
+  test('Should return 403 Forbidden error if the user role "user" requests client/:id !== user.id', async () => {
     expect.assertions(2);
     const response = await request(app)
       .get('/clients/a0ece5db-cd14-4f21-812f-966633e7be86')
+      .set('Authorization', `Bearer ${userToken}`)
+      .expect(403);
+
+    expect(response.error).toBeTruthy();
+    expect(response.statusCode).toBe(403);
+  });
+});
+
+describe('GET /clients/:id/policies', () => {
+  test('Schould correctly return policies of the client', async () => {
+    expect.assertions(2);
+    const response = await request(app)
+      .get('/clients/e8fd159b-57c4-4d36-9bd7-a59ca13057bb/policies')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .expect(200);
+
+    expect(response.body).toBeTruthy();
+    expect(response.body.length).toBeGreaterThan(0);
+  });
+
+  test('Schould return 403 Forbiden error when resource requested by not authorized user', async () => {
+    expect.assertions(2);
+    const response = await request(app)
+      .get('/clients/e8fd159b-57c4-4d36-9bd7-a59ca13057bb/policies')
       .set('Authorization', `Bearer ${userToken}`)
       .expect(403);
 
