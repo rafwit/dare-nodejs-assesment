@@ -101,7 +101,6 @@ describe('GET /clients/:id', () => {
       .get('/clients/a0ece5db-cd14-4f21-812f-966633e7be86')
       .set('Authorization', `Bearer ${userToken}`)
       .expect(403);
-    console.log(response);
     expect(response.error).toBeTruthy();
     expect(response.statusCode).toBe(403);
   });
