@@ -1,6 +1,6 @@
 const axios = require('axios');
 const { myCache } = require('./cache');
-const { setTokenValidTime } = require('./functions');
+const { getTokenValidTime } = require('./functions');
 
 const {
   CLIENTS_ENDPOINT,
@@ -16,7 +16,7 @@ async function renewInsuranceToken() {
     client_secret: CLIENT_SECRET,
   });
 
-  const validTill = setTokenValidTime(token.data.token);
+  const validTill = getTokenValidTime(token.data.token);
 
   myCache.set('insurance_token', token.data, validTill);
 }

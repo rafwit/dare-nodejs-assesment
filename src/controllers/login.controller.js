@@ -8,7 +8,7 @@ const {
 
 const {
   checkIfClientExistAndVerifyRole,
-  setTokenValidTime,
+  getTokenValidTime,
 } = require('../helpers/functions');
 
 const { myCache } = require('../helpers/cache');
@@ -34,7 +34,7 @@ async function authenticateUser(req, res, next) {
         expiresIn: '0.5h',
       });
 
-      const validTill = setTokenValidTime(userToken);
+      const validTill = getTokenValidTime(userToken);
 
       myCache.set(username, `${username} ${user.role} ${user.id}`);
       res.status(200).send({
