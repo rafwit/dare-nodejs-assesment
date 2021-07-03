@@ -1,7 +1,7 @@
 # Node.js code assesment
 
 🔥 This repo contains result of Node.js code assesment for recruitment process in Altran (today Capgemini Enginnering) 🔥
-This plus really cool interview and (and job offer! 🥸) made my decide to join Capgemini. Today I create pimped versions of this little tool with AXA Central team from Barcelona
+This plus really cool interview (and a job offer! 🥸) made me decide to join Capgemini. Today I create pimped versions of this little tool with AXA Insurance Central team from Barcelona.
 
 <br/>.
 <br/>
